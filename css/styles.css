@@ -1,0 +1,75 @@
+body {
+	/*background-color: gray;*/
+	background-image: url("img/cve.jpg");
+}
+
+h3 {
+	text-align: center;
+	background-color: black;
+	color: lawngreen;
+	padding: 12px;
+	font-weight: bold;
+	font-size: 1.5em;
+	font-family: Courier, monospace;
+	-moz-box-shadow: 5px 5px 5px 12px #c72114;
+	-webkit-box-shadow: 5px 5px 12px 5px #c72114;
+	box-shadow: 5px 5px 10px 2px #c72114;
+}
+
+button {
+	color: darkred;
+	font-weight: bold;
+	font-size: 1.5em;
+	font-family: Courier, monospace;
+	background-color: gray;
+}
+
+
+
+/* #button-container {
+	align-self: center;
+	text-align: center;
+	background-color: blue;
+	width: 50%;
+	fill: blue;
+}
+*/
+.button-cont {
+	align-self: center;
+	text-align: center;
+	background-color: grey;
+	margin:12px;
+}
+
+.small-stat {
+	width: 25%;
+	margin: 10%;
+	float: left;
+}
+
+small-stat-container {
+	width: 50%;
+	text-align: center;
+
+}
+
+.half-container {
+	width: 50%;
+}
+
+#right-div {
+	width: 90%;
+	position: fixed;
+	font-size: 1.25em;
+	top: 2.5em;
+	right: 2.5em;
+	height: 50%;
+	overflow: auto;
+	text-align: bottom;
+	float: left;
+	font-family: Courier, monospace;
+	color: lawngreen;
+	font-weight: bold; 
+	background-color: black;
+	align-self: right;
+}
