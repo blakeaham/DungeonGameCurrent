@@ -12,7 +12,8 @@ let page = {
 
 let player = {
 	health: 10,
-	power: 8
+	power: 8,
+	firstAttack: true
 }
 
 
@@ -59,6 +60,8 @@ const fighter = () => {
 
 const rogue = () => {
 
+
+	player.class = 'rogue';
 	player.dexterity = page.playerStats[0];
 	player.dexMod = Math.floor((player.dexterity - 10) / 2);
 	player.atkMod = player.dexMod;
@@ -174,6 +177,15 @@ const fight = () => {
 	let gameMessage = document.getElementById('game-message');
 	let playerAttack = determineAttack(player);
 	if (player.rollResult + player.atkMod >= opponent.ac ) {
+		if (player.class === 'rogue') {
+			if (player.firstAttack === true) {
+				let snd = rollD(6);
+				console.log(playerAttack + ' is unmodified damage');
+				playerAttack += snd;
+				console.log(playerAttack + ' damage after adding Sneak for ' + snd );
+				player.firstAttack = false;
+			}
+		}
 		opponent.health -= playerAttack;
 		currentLog += "\n You hit with a " + (player.rollResult + player.atkMod) + ' for ' + playerAttack + ' damage.';
 		console.log('hit for' + playerAttack)
@@ -186,6 +198,7 @@ const fight = () => {
 	if (isGameOver(opponent.health)){
 		printToScreen();
 		gameMessage.innerText = "Player won!";
+		player.firstAttack = true;
 		win();
 		setButton1('Go Rest', home);
 		setButton2('Find More!', fightAgain)
@@ -256,7 +269,8 @@ const run = () => {
 	player.health -= rollD(opponent.dmgDie);
 	printToScreen();
 	} else {
-	home();
+		player.firstAttack = true;
+		home();
 	}
 }
 let n = 0;
@@ -277,6 +291,7 @@ const fightAgain = () => {
 
 const home = () => {
 	page.gold -= 1;
+	document.body.style.backgroundImage = "url('css/img/tavern.jpg')";
 	document.getElementById('gold-page').innerText = page.gold;
 	currentLog += '\nYou make it back to the Slippery Corkscrew, the local inn and tavern. \n Micah passes you a beer from behind the bar. \n He says he\'ll have a plate out soon.'
 	player.health = player.hpMax;
@@ -346,6 +361,7 @@ const win = () => {
 // where we keep scene
 
 const forest= () => {
+	document.body.style.backgroundImage = "url('css/img/forest.jpg')";
 	page.scene = 'forest';
 	setButton1('Run away through the forest', run);
 	setButton2('Fight under the starlight', fight);
@@ -355,7 +371,7 @@ const forest= () => {
 
 const cave = () => {
 	/* not sure why this doesn't work */
-	document.body.style.backgroundImage = "url('../../css/img/cave.jpg')";
+	document.body.style.backgroundImage = "url('css/img/cave.jpg')";
 
 	/*
 	*/	page.scene = 'cave';

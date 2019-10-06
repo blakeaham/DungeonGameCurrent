@@ -1,6 +1,7 @@
 body {
 	/*background-color: gray;*/
 	background-image: url("img/cve.jpg");
+	background-size: 100%;
 }
 
 h3 {
