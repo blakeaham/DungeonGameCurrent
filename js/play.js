@@ -11,8 +11,8 @@ let page = {
 }
 
 let player = {
-	health: 10,
-	power: 8,
+	health: '?',
+	level: 1,
 	firstAttack: true
 }
 
@@ -48,10 +48,11 @@ const fighter = () => {
 	player.dexterity = page.playerStats[2];
 	player.dexMod = Math.floor((player.dexterity - 10) / 2);
 	player.dmgDie = 8;
+	player.hd = 10;
 	player.hpMax = Math.floor((page.playerStats[1] - 10)) + 20;
 	player.health = player.hpMax;
 	player.ac = 14 + player.dexMod
-	currentLog += '\n' + 'You are a beefy fighter: +' + player.strMod + ' is your attack modifier, and you have ' + player.hpMax + ' health. \n Your AC is: '+ player.ac +' \n You are good at killing; in fact, you were just trying to kill this ' + opponent.name;
+	currentLog += 'You are a beefy fighter: +' + player.strMod + ' is your attack modifier, and you have ' + player.hpMax + ' health. \n Your AC is: '+ player.ac +' \n You are good at killing; in fact, you were just trying to kill this ' + opponent.name;
 	setButton1('Run, Coward', run);
 	setButton2('Fight! Kill!', fight);
 	printToScreen()
@@ -66,10 +67,11 @@ const rogue = () => {
 	player.dexMod = Math.floor((player.dexterity - 10) / 2);
 	player.atkMod = player.dexMod;
 	player.dmgDie = 6;
+	player.hd = 8;
 	player.hpMax = Math.floor((page.playerStats[1] - 10)) + 16;
 	player.health = player.hpMax;
 	player.ac = 12 + player.dexMod
-	currentLog += '\n' + 'You are a sneaky roge : +' + player.dexMod + ' is your attack modifier, and you have ' + player.hpMax + ' health. \n Your AC is: '+ player.ac +' \n You are good escaping; in fact, you were just trying to escape this ' + opponent.name;
+	currentLog += 'You are a sneaky rogue : +' + player.dexMod + ' is your attack modifier, and you have ' + player.hpMax + ' health. \n Your AC is: '+ player.ac +' \n You are good escaping; in fact, you were just trying to escape this ' + opponent.name;
 	setButton1('Disappear', run);
 	setButton2('fight exposed!', fight);
 	printToScreen()
@@ -187,11 +189,11 @@ const fight = () => {
 			}
 		}
 		opponent.health -= playerAttack;
-		currentLog += "\n You hit with a " + (player.rollResult + player.atkMod) + ' for ' + playerAttack + ' damage.';
+		currentLog += "You hit with a " + (player.rollResult + player.atkMod) + ' for ' + playerAttack + ' damage.';
 		console.log('hit for' + playerAttack)
 	} else {
 		
-	currentLog += "\n Your " + (player.rollResult + player.atkMod) + ' did not hit against AC.';
+	currentLog += "Your " + (player.rollResult + player.atkMod) + ' did not hit against AC.';
 	}
 	document.getElementById('button2').disabled = true;
 	document.getElementById('button1').disabled = true;
@@ -267,9 +269,14 @@ const run = () => {
 	if (opponent.rollResult >= player.rollResult + player.dexMod) {
 //		This is what I had. waste of space lol!?	player.health -= Math.floor(Math.random() * opponent.dmgDie + 1);
 	player.health -= rollD(opponent.dmgDie);
+	currentLog += 'You try to run, but are struck!';
+
 	printToScreen();
+
 	} else {
+		currentLog += 'You make it away from the ' + opponent.name;
 		player.firstAttack = true;
+		printToScreen();
 		home();
 	}
 }
@@ -284,18 +291,25 @@ const fightAgain = () => {
 	} else {
 		setButton1("You're", home);
 		setButton2("Lost!", home);
-		currentLog += " \n You need to go back home, you've lost your way";
+		currentLog += "You need to go back home, you've lost your way";
 		printToScreen();
 	}
 }
 
 const home = () => {
-	page.gold -= 1;
-	document.body.style.backgroundImage = "url('css/img/tavern.jpg')";
-	document.getElementById('gold-page').innerText = page.gold;
-	currentLog += '\nYou make it back to the Slippery Corkscrew, the local inn and tavern. \n Micah passes you a beer from behind the bar. \n He says he\'ll have a plate out soon.'
-	player.health = player.hpMax;
-	currentLog += '\nYour health is ' +  player.health + ' and you\'re ready to  go out and fight again!';
+	if (page.gold > 1) {
+
+		page.gold -= 1;
+		advanceCheck();
+		page.scene = 'tavern';
+		document.body.style.backgroundImage = "url('css/img/tavern.jpg')";
+		document.getElementById('gold-page').innerText = page.gold;
+		currentLog += 'You make it back to the Slippery Corkscrew, the local inn and tavern. \n Micah passes you a beer from behind the bar. \n He says he\'ll have a plate out soon. \n'
+		player.health = player.hpMax;
+		currentLog += 'Your health is ' +  player.health + ' and you\'re ready to  go out and fight again!';
+	} else {
+		currentLog += 'You get to the inn, but Micah turns you away as the pauper you are. \n "Don\'t come back until you\'ve some gold to pay!';
+	}
 	//determine MONTSHTER //
 	selectMonster();
 
@@ -309,13 +323,25 @@ const home = () => {
 //This prints and updates screen, so it should be called ALL THE TIME//
 
 const printToScreen = () => {
-	document.getElementById('top-message').innerText = "Your opponent has " + opponent.health + " health";
+	if (page.scene === 'tavern'){
+	document.getElementById('top-label').innerText = 'Back at the Slippery Corkscrew';
+	document.getElementById('top-message').innerText = " you seek food and lodging.";
+	} else {
 	document.getElementById('bottom-message').innerText = "You have " + player.health + " health";
 	document.getElementById('player-roll-sub').innerText = player.rollResult;
 	page.opponentName = opponent.name;
-	document.getElementById('right-div').innerText += currentLog;
-	currentLog = '';
 	document.getElementById('top-label').innerText = 'You face a ' + page.opponentName + ' :';
+	document.getElementById('top-message').innerText = "Your opponent has " + opponent.health + " health";
+	
+	}
+	
+	if (currentLog === '') { 
+		console.log('empty CurrenLog');
+	} else {
+		document.getElementById('right-div').innerText += '\n' + currentLog + '\n';
+		currentLog = '';
+	}
+	document.getElementById('right-div').scrollTop = document.getElementById('right-div').scrollHeight;
 	
 }
 
@@ -357,6 +383,15 @@ const win = () => {
 	}*/
 }
 
+
+const advanceCheck = () => {
+	let xpLevel = (Math.floor(page.wins / 100) + 1);
+	if (xpLevel > player.level) {
+		player.level += 1;
+		player.hpMax += rollD(player.hd); 
+	}
+
+}
 
 // where we keep scene
 
