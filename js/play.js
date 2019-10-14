@@ -327,7 +327,6 @@ const printToScreen = () => {
 	document.getElementById('top-label').innerText = 'Back at the Slippery Corkscrew';
 	document.getElementById('top-message').innerText = " you seek food and lodging.";
 	} else {
-	document.getElementById('bottom-message').innerText = "You have " + player.health + " health";
 	document.getElementById('player-roll-sub').innerText = player.rollResult;
 	page.opponentName = opponent.name;
 	document.getElementById('top-label').innerText = 'You face a ' + page.opponentName + ' :';
@@ -341,6 +340,7 @@ const printToScreen = () => {
 		document.getElementById('right-div').innerText += '\n' + currentLog + '\n';
 		currentLog = '';
 	}
+	document.getElementById('bottom-message').innerText = "You have " + player.health + " health";
 	document.getElementById('right-div').scrollTop = document.getElementById('right-div').scrollHeight;
 	
 }
